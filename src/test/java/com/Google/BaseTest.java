@@ -36,8 +36,8 @@ public class BaseTest {
     /**
      * Аннотация для закрытия браузера после каждого теста
      */
-//    @AfterEach
-//    public void after() {
-//        chromeDriver.quit();
-//    }
+    @AfterEach
+    public void after() {
+        chromeDriver.quit();
+    }
 }

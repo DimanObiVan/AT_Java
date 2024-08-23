@@ -22,7 +22,7 @@ public class TablePage {
 //    private String tableSelector = "//*[contains(text(),'Преподаватели кафедры программирования')]/..";
     private String tableSelector = "//table[@class='wikitable'][1]";
 
-    private String tableHeaderSelector = ".//tr[1]";
+    private String tableHeaderSelector = ".//th";
 
     private String tableRowSelector = ".//tr[1]/following-sibling::tr";
 
@@ -56,14 +56,15 @@ public class TablePage {
         System.out.println(tableHeaders);
         System.out.println(tableRows);
 
-    for(int i = 0; i<tableRows.size(); ++i) {
+    for(int i = 0; i<tableRows.size(); i++) {
         Map<String, String> tableHeader = new HashMap<>();
-        for (int j = 0; j<tableHeaders.size(); ++j) {
-//            List<WebElement> rowCells = tableRows.get(i).findElements(By.xpath("./td"));
+//        List<WebElement> rowCells = tableRows.get(i).findElements(By.xpath("./td"));
+        for (int j = 0; j<tableHeaders.size(); j++) {
             tableHeader.put(
                     tableHeaders.get(j).getText(),
-                    tableRows.get(j).getText());
-
+//                    tableHeaders.get(j).findElement(By.xpath("./th["+(j+1)+"]")).getText(),
+//                   rowCells.get(j).getText());
+                    tableRows.get(i).findElement(By.xpath("./td["+(j+1)+"]")).getText());
         }
         NamesTable.add(tableHeader);
     }

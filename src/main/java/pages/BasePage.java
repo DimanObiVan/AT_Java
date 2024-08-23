@@ -34,7 +34,8 @@ public class BasePage {
     public BasePage(WebDriver chromeDriver) {
         this.chromeDriver = chromeDriver;
         this.searchField = chromeDriver.findElement(By.xpath("//textarea[@aria-label='Найти']"));
-        this.searchButton = chromeDriver.findElement(By.xpath("//div[contains(@jsname, 'VlcLAe')]//input[1]"));
+//        this.searchButton = chromeDriver.findElement(By.xpath("//div[contains(@jsname, 'VlcLAe')]//input[1]"));
+        this.searchButton = chromeDriver.findElement(By.xpath("//div[not (@jsname)]/center/*[@value='Поиск в Google']"));
         wait = new WebDriverWait(chromeDriver, 35);
 
     }
@@ -49,7 +50,8 @@ public class BasePage {
 //        System.out.println("нажал на поле поиска");
         searchField.sendKeys(word);
 //        System.out.println("напечатал слово");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@jsname, 'VlcLAe')]//input[1]")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//textarea[@aria-label='Найти']")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@jsname, 'VlcLAe')]//input[1]")));
 //        System.out.println("подождал");
         searchButton.click();
 //        System.out.println("нажал поиск");

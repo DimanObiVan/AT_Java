@@ -180,11 +180,24 @@ public class Tests extends BaseTest {
         TablePage tablePage = new TablePage(chromeDriver);
         List<Map<String,String>> teachersNames = tablePage.getNamesTable();
         System.out.println(teachersNames);
-//        System.out.println(teachersNames.stream()
-//                .filter(x->x.get("Имя").contains("Сергей"))
-//                .findFirst()
-//                .get().get("Отчество")
-//        );
+        String firstName = teachersNames.stream()
+                .filter(x->x.get("Имя").contains("Сергей"))
+                .findFirst()
+                .get().get("Отчество");
+        System.out.println(firstName);
+        Map<String, String> firstEntry = teachersNames.get(0);
+        Map<String, String> lastEntry = teachersNames.get(teachersNames.size() - 1);
+
+        // Проверяем, что первое значение соответствует "Сергей Владимирович"
+        boolean isFirstCorrect = "Сергей".equals(firstEntry.get("Имя")) && "Владимирович".equals(firstEntry.get("Отчество"));
+
+        // Проверяем, что последнее значение соответствует "Сергей Адамович"
+        boolean isLastCorrect = "Сергей".equals(lastEntry.get("Имя")) && "Адамович".equals(lastEntry.get("Отчество"));
+
+        System.out.println(isFirstCorrect);
+        System.out.println(isLastCorrect);
+
+        // Возвращаем true, если оба условия выполнены
 //        WebElement firstRow = tablePage.rows().get(0);
 //        String firstName = firstRow.findElement(By.xpath(".//td[2]")).getText();
 //        String firstPatronymic = firstRow.findElement(By.xpath(".//td[3]")).getText();
