@@ -53,8 +53,6 @@ public class TablePage {
         wait.until(ExpectedConditions.visibilityOf(table));
         List<WebElement> tableHeaders = table.findElements(By.xpath(tableHeaderSelector));
         List<WebElement> tableRows = table.findElements(By.xpath(tableRowSelector));
-        System.out.println(tableHeaders);
-        System.out.println(tableRows);
 
     for(int i = 0; i<tableRows.size(); i++) {
         Map<String, String> tableHeader = new HashMap<>();
