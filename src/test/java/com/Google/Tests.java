@@ -156,7 +156,6 @@ public class Tests extends BaseTest {
                 coursesPage
                         .convertCurrencyElementsToMap()
                         .get("EUR Sell"), "Курс покупки для евро больше курса продажи евро!");
-////        Assertions.assertTrue(coursesPage.convertToString()<coursesPage.convertToString(), "Курс покупки для евро больше курса продажи евро!");
 
 
     }

@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static helpers.CustomWaits.implicitlyWait;
+import static helpers.Properties.testsProperties;
+
 /**
  * Класс с методами (Д. К. Кузнецов)
  */
@@ -25,6 +28,7 @@ public class BaseTest {
         System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().window().maximize();
+        implicitlyWait(chromeDriver,testsProperties.defaultTimeout());
         chromeDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
         chromeDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         chromeDriver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);

@@ -28,6 +28,8 @@ public class TablePage {
 
     protected WebDriverWait wait;
 
+    public List<Map<String, String>> NamesTable = new ArrayList<>();
+
 
     /**
      * Конструктор страницы
@@ -47,7 +49,7 @@ public class TablePage {
         results = chromeDriver.findElements(By.xpath("//table[@class='wikitable'][1]//tr[td]"));
         return results;
     }
-    public List<Map<String, String>> NamesTable = new ArrayList<>();
+
     public List<Map<String, String>> getNamesTable () {
         table = chromeDriver.findElement(By.xpath(tableSelector));
         wait.until(ExpectedConditions.visibilityOf(table));
@@ -56,12 +58,9 @@ public class TablePage {
 
     for(int i = 0; i<tableRows.size(); i++) {
         Map<String, String> tableHeader = new HashMap<>();
-//        List<WebElement> rowCells = tableRows.get(i).findElements(By.xpath("./td"));
         for (int j = 0; j<tableHeaders.size(); j++) {
             tableHeader.put(
                     tableHeaders.get(j).getText(),
-//                    tableHeaders.get(j).findElement(By.xpath("./th["+(j+1)+"]")).getText(),
-//                   rowCells.get(j).getText());
                     tableRows.get(i).findElement(By.xpath("./td["+(j+1)+"]")).getText());
         }
         NamesTable.add(tableHeader);
