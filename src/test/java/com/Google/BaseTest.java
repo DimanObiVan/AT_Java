@@ -28,7 +28,7 @@ public class BaseTest {
         System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().window().maximize();
-        implicitlyWait(chromeDriver,testsProperties.defaultTimeout());
+//        implicitlyWait(chromeDriver,testsProperties.defaultTimeout());
         chromeDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
         chromeDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         chromeDriver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);

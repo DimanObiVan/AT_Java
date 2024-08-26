@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -124,10 +125,11 @@ public class Tests extends BaseTest {
     @Feature("ТК 1.2")
     @DisplayName("Проверка ТК 1.2 c помощью PO")
     @ParameterizedTest(name="{displayName}: {arguments}")
-    @CsvSource(value = {"Открытие|Банк Открытие: кредит наличными, ипотека, кредитные и ...|" +
-            "//*[contains(text(), 'Банк Открытие: кредит наличными, ипотека, кредитные и ...')]|" +
-            "//*[@href='https://www.open.ru/']/.."},
-            delimiter = '|')
+    @MethodSource("helpers.DataProvider#providerCheckingMoney")
+//    @CsvSource(value = {"Открытие|Банк Открытие: кредит наличными, ипотека, кредитные и ...|" +
+//            "//*[contains(text(), 'Банк Открытие: кредит наличными, ипотека, кредитные и ...')]|" +
+//            "//*[@href='https://www.open.ru/']/.."},
+//            delimiter = '|')
     public void testCase_1_2_PO(String word, String phrase, String xPath1, String xPath2) {
         chromeDriver.get("https://www.google.com/");
         BasePage page = new BasePage(chromeDriver);
