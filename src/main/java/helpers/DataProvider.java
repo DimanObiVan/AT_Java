@@ -11,7 +11,7 @@ public class DataProvider {
     public static Stream<Arguments> providerCheckingMoney(){
         return Stream.of(
                 Arguments.of("Oткрытие", "Банк Открытие: кредит наличными, ипотека, кредитные и ...",
-                        "//*[contains(text(), 'Банк Открытие: кредит наличными, ипотека, кредитные и ...')]" +
+                        "//*[contains(text(), 'Банк Открытие: кредит наличными, ипотека, кредитные и ...')]",
                                 "//*[@href='https://www.open.ru/']/..")//,
                 //Arguments.of("Oткрытие", "Банк Открытие: кредит наличными, ипотека, кредитные и ...", "EUR")
         );
@@ -23,6 +23,12 @@ public class DataProvider {
         money.add("EUR");
         return Stream.of(
                 Arguments.of("Oткрытие", "Банк Открытие: кредит наличными, ипотека, кредитные и ...", money)
+        );
+    }
+
+    public static Stream<Arguments> dataForWikiTable() {
+        return Stream.of(
+                Arguments.of("таблица википедия", "Таблица", "//h3[text()='Таблица']","//h3[text()='Таблица']")
         );
     }
 }

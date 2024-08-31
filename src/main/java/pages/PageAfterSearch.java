@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,5 +33,12 @@ public class PageAfterSearch {
         results = chromeDriver.findElements(By.xpath("//*[contains(text(),'wikipedia.org')]"));
         System.out.println("вернул элементы");
         return results;
+    }
+
+    public void openingNewTab(String xPath) {
+        WebElement link = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
+        link.click();
+        ArrayList<String> tabs = new ArrayList<> (chromeDriver.getWindowHandles());
+        chromeDriver.switchTo().window(tabs.get(1));
     }
 }

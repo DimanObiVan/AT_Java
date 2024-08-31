@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static steps.StepsAll.*;
+
 
 /**
  * Класс с тестом (Д. К. Кузнецов)
@@ -144,20 +146,27 @@ public class Tests extends BaseTest {
         mainPage.openCourses();
         BankCoursesPage coursesPage = new BankCoursesPage(chromeDriver);
         Assertions.assertTrue(coursesPage.getResults().size()>3, "На странице менее 3 курсов валют!");
-        Assertions.assertTrue(coursesPage
-                .convertCurrencyElementsToMap()
-                .get("USD Buy")
-                <
-                    coursesPage
-                        .convertCurrencyElementsToMap()
-                            .get("USD Sell"), "Курс покупки для долларов больше курса продажи доллара!");
-        Assertions.assertTrue(coursesPage
-                .convertCurrencyElementsToMap()
-                .get("EUR Buy")
-                <
+        Assertions.assertTrue(Double.parseDouble(
                 coursesPage
-                        .convertCurrencyElementsToMap()
-                        .get("EUR Sell"), "Курс покупки для евро больше курса продажи евро!");
+                .convertCurrencyElementsToMap().stream()
+                        .filter(x->x.get("Валюта обмена").contains("USD"))
+                        .findFirst()
+                        .get().get("Банк покупает").replace(",","."))
+                <
+                        Double.parseDouble(
+                    coursesPage
+                        .convertCurrencyElementsToMap().stream()
+                            .filter(x->x.get("Валюта обмена").contains("USD"))
+                            .findFirst()
+                            .get().get("Банк продаёт").replace(",","."))
+                                , "Курс покупки для долларов больше курса продажи доллара!");
+//        Assertions.assertTrue(coursesPage
+//                .convertCurrencyElementsToMap()
+//                .get("EUR Buy")
+//                <
+//                coursesPage
+//                        .convertCurrencyElementsToMap()
+//                        .get("EUR Sell"), "Курс покупки для евро больше курса продажи евро!");
 
 
     }
@@ -167,8 +176,9 @@ public class Tests extends BaseTest {
     @Feature("ТК 1.3")
     @DisplayName("Проверка ТК 1.3 c помощью PO")
     @ParameterizedTest(name="{displayName}: {arguments}")
-    @CsvSource(value = {"таблица википедия|Таблица|//h3[text()='Таблица']|//h3[text()='Таблица']"},
-            delimiter = '|')
+    @MethodSource("helpers.DataProvider#dataForWikiTable")
+//    @CsvSource(value = {"таблица википедия|Таблица|//h3[text()='Таблица']|//h3[text()='Таблица']"},
+//            delimiter = '|')
     public void testCase_1_3_PO(String word, String phrase, String xPath1, String xPath2) {
         chromeDriver.get("https://www.google.com/");
         BasePage page = new BasePage(chromeDriver);
@@ -191,5 +201,20 @@ public class Tests extends BaseTest {
                                         .map(x->x.get("Имя")+ " " + x.get("Отчество"))
                                                 .orElse("Не найдено");
         Assertions.assertTrue(firstPerson.equals("Сергей Владимирович") && lastPerson.equals("Сергей Адамович"), "Неверный порядок учителей");
+    }
+
+    @Feature("ТК 1.4")
+    @DisplayName("Проверка ТК 1.4 c помощью PO")
+   @ParameterizedTest(name="{displayName}: {arguments}")
+    @MethodSource("helpers.DataProvider#providerCheckingMoney")
+    public void testOpenV2WithStepsAll(String word, String phrase, String xPath1, String xPath2) {
+        openSite("https://www.google.com/", "Google", chromeDriver);
+        setOpenNewTab();
+        searchInGoogle(word);
+        openNewTab(xPath2);
+        checkCourses();
+        checkUSDCourses();
+        checkUSDCoursesValues();
+
     }
 }

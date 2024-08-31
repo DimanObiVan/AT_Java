@@ -6,30 +6,37 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static helpers.CustomWaits.waitInvisibleIfLocated;
 
 
 /**
  * Класс для страницы с курсами валют (Кузнецов)
  */
-public class BankCoursesPage extends OpenBankMainPage {
-    protected WebElement usdBuyCourse = chromeDriver.findElement(By.xpath("//section[not(contains(@style, 'display: none;'))]//td//span[contains(text(),'USD')]/../../following-sibling::td[1]"));
-    protected WebElement usdSellCourse = chromeDriver.findElement(By.xpath("//section[not(contains(@style, 'display: none;'))]//td//span[contains(text(),'USD')]/../../following-sibling::td[2]"));
+public class BankCoursesPage {
+    private String selectorPreload = "//div[@class='open-ui-loader rate-loader centered']";
+    private String selectorExchangeRates = "//section[not(@style='display: none;')]//table[@class='card-rates-table cards']";
 
-    protected WebElement eurBuyCourse = chromeDriver.findElement(By.xpath("//section[not(contains(@style, 'display: none;'))]//td//span[contains(text(),'EUR')]/../../following-sibling::td[1]"));
+    private String selectorTableHeaders = ".//thead//th";
 
-    protected WebElement eurSellCourse = chromeDriver.findElement(By.xpath("//section[not(contains(@style, 'display: none;'))]//td//span[contains(text(),'EUR')]/../../following-sibling::td[2]"));
+    private String selectorTableRows = ".//tbody/tr";
 
-    private List<WebElement> resultCourse;
+    private WebDriver chromedriver;
 
+    private WebElement exchangeRates;
+
+    private List<Map<String,String>> collectExchangeRates = new ArrayList<>();
     /**
      * конструктор
      * @param chromeDriver - объект вебдрайвера (Кузнецов)
      */
     public BankCoursesPage(WebDriver chromeDriver) {
-        super(chromeDriver);
+
+        this.chromedriver = chromeDriver;
     }
 
     /**
@@ -37,8 +44,8 @@ public class BankCoursesPage extends OpenBankMainPage {
      * @return - возвращает коллекцию (Кузнецов)
      */
     public List<WebElement> getResults() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//section[not(contains(@style, 'display: none;'))]//tbody/child::*")));
-        resultCourse = chromeDriver.findElements(By.xpath("//section[not(contains(@style, 'display: none;'))]//tbody/child::*"));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//section[not(contains(@style, 'display: none;'))]//tbody/child::*")));
+        List<WebElement> resultCourse = chromedriver.findElements(By.xpath("//section[not(contains(@style, 'display: none;'))]//tbody/child::*"));
         return resultCourse;
     }
 
@@ -47,15 +54,24 @@ public class BankCoursesPage extends OpenBankMainPage {
      * @return - возвращает курс числом (Кузнецов)
      */
 
-    public Map<String, Double> convertCurrencyElementsToMap() {
-        Map<String, Double> currencyValues = new HashMap<>();
+    public List<Map<String, String>> convertCurrencyElementsToMap() {
+//        waitInvisibleIfLocated(chromedriver, selectorPreload,2,5);
+        //fluentWaitInvisibleIfLocated(driver, selectorPreload,2,5);
+        exchangeRates=chromedriver.findElement(By.xpath(selectorExchangeRates));
+        List<WebElement> tableHeaders = exchangeRates.findElements(By.xpath(selectorTableHeaders));
+        List<WebElement> tableRows = exchangeRates.findElements(By.xpath(selectorTableRows));
 
-        currencyValues.put("USD Buy", Double.parseDouble(usdBuyCourse.getText().replace(",", ".")));
-        currencyValues.put("USD Sell", Double.parseDouble(usdSellCourse.getText().replace(",", ".")));
-        currencyValues.put("EUR Buy", Double.parseDouble(eurBuyCourse.getText().replace(",", ".")));
-        currencyValues.put("EUR Sell", Double.parseDouble(eurSellCourse.getText().replace(",", ".")));
+        for (int i=0; i<tableRows.size();++i){
+            Map<String,String> collectRow = new HashMap<>();
+            for (int j=0; j<tableHeaders.size();++j)
+                collectRow.put(
+                        tableHeaders.get(j).getText(),
+                        tableRows.get(i).findElement(By.xpath("./td["+(j+1)+"]")).getText()
+                );
+            collectExchangeRates.add(collectRow);
+        }
 
-        return currencyValues;
+        return collectExchangeRates;
     }
 
 

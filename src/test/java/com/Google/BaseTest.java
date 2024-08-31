@@ -29,9 +29,9 @@ public class BaseTest {
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().window().maximize();
 //        implicitlyWait(chromeDriver,testsProperties.defaultTimeout());
-        chromeDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-        chromeDriver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-        chromeDriver.manage().timeouts().setScriptTimeout(60, TimeUnit.SECONDS);
+        chromeDriver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+        chromeDriver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+        chromeDriver.manage().timeouts().setScriptTimeout(20, TimeUnit.SECONDS);
 
 
 
@@ -40,8 +40,8 @@ public class BaseTest {
     /**
      * Аннотация для закрытия браузера после каждого теста
      */
-    @AfterEach
-    public void after() {
-        chromeDriver.quit();
-    }
+//    @AfterEach
+//    public void after() {
+//        chromeDriver.quit();
+//    }
 }
