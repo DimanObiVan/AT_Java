@@ -31,4 +31,21 @@ public class DataProvider {
                 Arguments.of("таблица википедия", "Таблица", "//h3[text()='Таблица']","//h3[text()='Таблица']")
         );
     }
+
+    /**
+     * Параметры для теста яндекс маркета
+     * @values коллекция производителей ноутбуков, для выбора фильтров
+     * @return Стрим из названия категории, раздела, мин и макс ценами, кол-во ноутбуков на странице
+     */
+    public static Stream<Arguments> dataForYandexMarket() {
+        List<String> values = new ArrayList<>();
+        values.add("HP");
+        values.add("Lenovo");
+        values.add("Acer");
+        values.add("ASUS");
+        values.add("DELL");
+        return Stream.of(
+                Arguments.of("Электроника", "Ноутбуки", "10000", "30000", 12, values)
+        );
+    }
 }

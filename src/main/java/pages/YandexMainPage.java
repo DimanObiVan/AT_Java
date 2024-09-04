@@ -19,8 +19,9 @@ public class YandexMainPage {
     private String catalogue = "//div[@data-zone-name='catalog']/button";
     private String categories = "//li[not(@data-baobab-name='department')]//*[contains(text(),'";
     private String itemsList = "//ul[@data-autotest-id='subItems']//*[contains(text(),'";
-    private String category = "Электроника";
-    private String item = "Ноутбуки";
+//    private String category = "Электроника";
+//    private String item = "Ноутбуки";
+//    private String searchField = "//input[@id='header-search']";
 
     public YandexMainPage(WebDriver chromeDriver) {
         this.chromeDriver = chromeDriver;
@@ -42,6 +43,11 @@ public class YandexMainPage {
         WebElement notebook = chromeDriver.findElement(By.xpath(itemsList+item+"')]"));
         notebook.click();
         Assertions.assertTrue(chromeDriver.findElement(By.xpath("//h1[@data-auto='title']")).getText().contains(item), "неверный раздел");
+    }
+
+    public void findFirstNotebook() {
+
+
     }
 
 //    public void assertNotebooksAreOpened () {
