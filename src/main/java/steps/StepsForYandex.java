@@ -59,20 +59,21 @@ public class StepsForYandex {
         page.goToThePageTop();
     }
 
-    @Step("В поисковую строку ввести запомненное значение.")
-    public static void findFirstNotebook() {
+    @Step("В поисковую строку ввести запомненное значение")
+    public static String findFirstNotebook() {
         YandexAfterSearch page = new YandexAfterSearch(driver);
-        page.findFirstNotebook();
+        String firstNotebookName = page.findFirstNotebook();
+        return firstNotebookName;
     }
-    @Step("Нажать кнопку «Найти»")
-    public static void searchButtonClick() {
-        YandexAfterSearch page = new YandexAfterSearch(driver);
-        page.searchButtonClick();
-    }
+ //   @Step("Нажать кнопку «Найти»")
+//    public static void searchButtonClick() {
+//        YandexAfterSearch page = new YandexAfterSearch(driver);
+//        page.searchButtonClick();
+//    }
     @Step("Проверить, что в результатах поиска, на первой странице, есть искомый товар")
-    public static void assertNotebookIsFound() {
+    public static void assertNotebookIsFound(String firstNotebookName)  {
         YandexAfterSearch page = new YandexAfterSearch(driver);
-        page.assertNotebookIsFound();
+        page.assertNotebookIsFound(firstNotebookName);
     }
 
 

@@ -40,8 +40,8 @@ public class YandexMarketTests extends BaseTest {
         countItems(number);
         assertElementsMatchFilter(minPrice, maxPrice, values);
         goToThePageTop();
-        findFirstNotebook();
-        searchButtonClick();
-        assertNotebookIsFound();
+       String first = findFirstNotebook();
+//        searchButtonClick();
+        assertNotebookIsFound(first);
     }
 }

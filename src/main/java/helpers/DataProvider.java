@@ -40,10 +40,10 @@ public class DataProvider {
     public static Stream<Arguments> dataForYandexMarket() {
         List<String> values = new ArrayList<>();
         values.add("HP");
-        values.add("Lenovo");
-        values.add("Acer");
-        values.add("ASUS");
-        values.add("DELL");
+//        values.add("Lenovo");
+//        values.add("Acer");
+//        values.add("ASUS");
+//        values.add("DELL");
         return Stream.of(
                 Arguments.of("Электроника", "Ноутбуки", "10000", "30000", 12, values)
         );

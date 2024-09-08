@@ -1,18 +1,27 @@
 package helpers;
 
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import static helpers.Properties.testsProperties;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class CustomWaits {
 
-    private static int implicitlyWait=testsProperties.defaultTimeout();
-    private static int pageLoadTimeout=testsProperties.defaultTimeout();
-    private static int setScriptTimeout=testsProperties.defaultTimeout();
+//    private static int implicitlyWait=testsProperties.defaultTimeout();
+//    private static int pageLoadTimeout=testsProperties.defaultTimeout();
+//    private static int setScriptTimeout=testsProperties.defaultTimeout();
+private static int implicitlyWait=30;
+    private static int pageLoadTimeout=30;
+    private static int setScriptTimeout=30;
+
 
 
     public static void implicitlyWait (WebDriver driver, int defaultTimeout){
@@ -48,6 +57,42 @@ public class CustomWaits {
             }
             sleep(1);
         }
-        implicitlyWait(driver,implicitlyWait);
+    //    implicitlyWait(driver,implicitlyWait);
     }
+
+    private static FluentWait<WebDriver> getFluentWait(WebDriver chromedriver, int timeWait, int frequency){
+        return new FluentWait<>(chromedriver)
+                .withTimeout(Duration.ofSeconds(timeWait))
+                .pollingEvery(Duration.ofMillis(frequency))
+                .ignoreAll(List.of(
+                        NoSuchElementException.class,
+                        WebDriverException.class,
+                        StaleElementReferenceException.class,
+                        ElementClickInterceptedException.class,
+                        TimeoutException.class)
+                );
+    }
+
+
+    public static void fluentWaitInvisibleIfLocated(WebDriver chromedriver, String elementXpath, int timeWaitLocated/*, int timeWaitInvisible*/){
+        chromedriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        try {
+            getFluentWait(chromedriver, timeWaitLocated, 100).until(visibilityOfElementLocated(By.xpath(elementXpath)));
+            //       getFluentWait(driver,timeWaitInvisible, 100).until(invisibilityOfElementLocated(By.xpath(elementXpath)));
+        } catch (StaleElementReferenceException e) {
+            System.out.println("Поймали эксепшн");
+        }
+        implicitlyWait(chromedriver,implicitlyWait);
+    }
+
+    public static FluentWait<WebDriver> fluentWait(WebDriver driver) {
+        return new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofMillis(200))
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class);
+    }
+
+
+
 }
