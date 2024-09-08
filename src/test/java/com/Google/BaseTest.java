@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static helpers.CustomWaits.implicitlyWait;
+
 import static helpers.Properties.testsProperties;
 
 /**

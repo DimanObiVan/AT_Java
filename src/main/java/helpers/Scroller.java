@@ -16,13 +16,13 @@ private static WebDriverWait wait;
        WebElement scroller = chromeDriver.findElement(By.xpath(xPath));
        //scroller.click();
         long startTime = System.currentTimeMillis();
-        long timeout = 35000;
+        long timeout = 45000;
        while (System.currentTimeMillis() - startTime < timeout) {
 
        //        chromeDriver.findElement(By.xpath(xPath)).click();
                scroller.sendKeys(Keys.PAGE_DOWN);
 
-           sleep(500);
+           sleep(700);
         //   WebElement footer = chromeDriver.findElement(By.xpath("//footer"));
 
        }

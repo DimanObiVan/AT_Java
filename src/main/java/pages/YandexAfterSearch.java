@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+import static helpers.Assertions.softAssert;
+import static helpers.CustomWaits.fluentWait;
+import static helpers.CustomWaits.fluentWaitInvisibleIfLocated;
 import static java.lang.Thread.sleep;
 
 public class YandexAfterSearch {
@@ -19,16 +22,19 @@ public class YandexAfterSearch {
     private String minValueRange = "//div[@data-filter-id='glprice']//span[contains(@data-auto, 'filter-range-min')]//input";
     private String maxValueRange = "//div[@data-filter-id='glprice']//span[contains(@data-auto, 'filter-range-max')]//input";
     private String manufacturerFilter = "//div[contains(@data-zone-data,'Производитель')]";
-    private String manufacturerFilterValue = "//div[contains(@data-zone-data,'";
+    private String manufacturerFilterValue = ".//div[contains(@data-zone-data,'";
     private String notebookElement = "//div[@data-auto='SerpList']/child::div";
     private String itemName = "//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name']";
-    private String itemPrice = "//div[@data-apiary-widget-name='@light/Organic']//div[@data-auto='snippet-price-current']";
+//    private String itemPrice = "//div[@data-apiary-widget-name='@light/Organic']//div[@data-auto='snippet-price-current']";
+    private String itemPrice = "//div[@data-baobab-name='price']//span[contains(@class,'headline')]";
     private String pageXpath = "//body";
     private String firstNotebookXpath = "(//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name'])[1]";
     private String searchField = "//input[@id='header-search']";
     private String searchButton = "//button[@data-auto='search-button']";
 //    private String filter = "//div[@data-zone-name='QuickFilters']//div[contains(@data-zone-data, '\"filterName\":\"Производитель\"')]";
     private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()='";
+    private String forStaleness = "//div[@data-apiary-widget-name='@marketfront/SerpEntity'][2]";
+    private String endOfXpath = "')]";
 
 
    // private List<String> manufacturer = List.of("HP", "Lenovo", "Acer", "ASUS");
@@ -48,67 +54,47 @@ public class YandexAfterSearch {
         maxValueField.sendKeys(Integer.toString(maxValue));
     }
 
-    /**
-     * Добавил возвращаемое значение
-     * @param values
-     * @return
-     */
+
     public void manufacturersList(List<String> values) throws InterruptedException {
-        // Ждем появления фильтра производителей на странице
-        WebElement manufacturerSection = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
-
+       WebElement filter = chromedriver.findElement(By.xpath(manufacturerFilter));
+//       wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
+        /**
+         * Итерируемся по всем указанным производителям
+         */
         for (String value : values) {
-            // Попробуем найти кнопку "Показать еще" и кликнуть по ней
-            try {
-                WebElement showMoreButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(manufacturerFilter + "//button")));
-                showMoreButton.click();
-                System.out.println("Кнопка 'Показать еще' нажата.");
-            } catch (Exception e) {
-                System.out.println("Кнопка 'Показать еще' не найдена или неактивна.");
-            }
-
-            // Ждем, пока появится input для ввода значения производителя
-            try {
-                WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter + "//input")));
-                wait.until(ExpectedConditions.visibilityOf(input));
-                input.clear();
-                input.sendKeys(value);
-                System.out.println("Вводим значение: " + value);
-
-                // Ждем появления элемента производителя и кликаем по нему
-                String manufacturerXpath = manufacturerFilter + manufacturerFilterValue + value + "')]";
-                WebElement manufacturerElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(manufacturerXpath)));
-                manufacturerElement.click();
-                System.out.println("Элемент найден и добавлен: " + value);
-            } catch (TimeoutException e) {
-                System.out.println("Не удалось найти input или элемент производителя для значения: " + value);
-            } catch (StaleElementReferenceException e) {
-                System.out.println("Элемент устарел, повторная попытка для значения: " + value);
-                WebElement manufacturerElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(manufacturerFilter + manufacturerFilterValue + value + "')]")));
-                manufacturerElement.click();
-            } catch (Exception e) {
-                System.out.println("Ошибка при работе с элементом: " + value + ". " + e.getMessage());
+            /**
+             * Ждем появление кнопки Показать еще и нажимаем
+             */
+            fluentWait(chromedriver)
+                    .until(ExpectedConditions
+                            .elementToBeClickable(filter
+                                    .findElement(By.xpath(".//button"))));
+            WebElement button = filter.findElement(By.xpath(".//button"));
+            button.click();
+            /**
+             * Ждем появление поля для ввода и вводим название
+             */
+            fluentWait(chromedriver)
+                    .until(ExpectedConditions
+                            .elementToBeClickable(filter
+                                    .findElement(By.xpath(  ".//input"))));
+            WebElement input = filter.findElement(By.xpath(".//input"));
+            input.sendKeys(value);
+            /**
+             * Ждем появление фильтра по названию и отмечаем чекбокс
+             */
+            fluentWait(chromedriver)
+                    .until(ExpectedConditions
+                            .elementToBeClickable(filter
+                                    .findElement(By.xpath(manufacturerFilterValue + value + endOfXpath))));
+            WebElement element = filter.findElement(By.xpath(manufacturerFilterValue + value + endOfXpath));
+            element.click();
+//            fluentWait(chromedriver).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@data-apiary-widget-name='@search/SerpStatic']")));
+            WebElement stale = chromedriver.findElement(By.xpath(forStaleness));
+            wait.until(ExpectedConditions.stalenessOf(stale));
+//            Thread.sleep(2000);
             }
         }
-    }
-//    public void manufacturersList(List<String> values) throws InterruptedException {
-//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
-//        /**
-//         * Ищем кнопку "Показать еще и нажимаем"
-//         */
-//        /**
-//         * Итерируемся по всем указанным производителям и нажимаем
-//         */
-//        for (String value : values) {
-//            WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(manufacturerFilter + "//button")));
-//            button.click();
-//            WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(manufacturerFilter+"//input")));
-//            input.sendKeys(value);
-//            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(manufacturerFilter+manufacturerFilterValue + value + "')]")));
-//            element.click();
-//            Thread.sleep(2000);
-//            }
-//        }
 
 
 
@@ -140,21 +126,18 @@ public class YandexAfterSearch {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         System.out.println(price);
-        List<String> MatchingNames = name.stream()
-                .filter(names -> values.stream().anyMatch(names::contains))
-                .collect(Collectors.toList());
-        System.out.println("удовлетворяют условиям: " + MatchingNames);
-//        List<String> nonMatchingNames = name.stream()
-//                .filter(names -> manufacturer.stream().noneMatch(manufacturerName ->
-//                        names.toLowerCase().contains(manufacturerName.toLowerCase())
-//
-//                )
-//        ).collect(Collectors.toList());
-//        System.out.println("НЕ удовлетворяют условиям: " + nonMatchingNames);
-//        List<String> nonMatchingNames = name.stream()
-//                .filter(names -> manufacturer.stream().noneMatch(names::contains))
+//        List<String> MatchingNames = name.stream()
+//                .filter(names -> values.stream().anyMatch(names::contains))
 //                .collect(Collectors.toList());
-//        System.out.println("Не удовлетворяют условиям: " + nonMatchingNames);
+//        System.out.println("удовлетворяют условиям: " + MatchingNames);
+        List<Integer> nonMatchingPrice = price.stream()
+                .filter(prices->prices<= minValue || prices >=maxValue)
+                .collect(Collectors.toList());
+        System.out.println("НЕ удовлетворяют условиям по цене: " + nonMatchingPrice);
+        List<String> nonMatchingNames = name.stream()
+                .filter(names -> values.stream().noneMatch(names::contains))
+                .collect(Collectors.toList());
+        System.out.println("Не удовлетворяют условиям по названию: " + nonMatchingNames);
 
         for (String names : name) {
             boolean matches = values.stream()
@@ -164,20 +147,29 @@ public class YandexAfterSearch {
                 System.out.println("Не найдено соответствие для: " + names);
             }
         }
-
-//        Assertions.assertTrue(
-//                name.stream().allMatch(names ->
-//                        manufacturer.stream().anyMatch(manufacturerName ->
-//                                names.toLowerCase().contains(manufacturerName.toLowerCase())
-//                        )
-//                ),
-//                "Не все элементы соответствуют фильтру по названию!"
-//        );
-
-        Assertions.assertTrue(price.stream()
-                .allMatch(prices->prices >= minValue && prices <= maxValue), "Не все элементы соответствуют фильтру по цене!");
+        /**
+         * Проверка на соответствие названию
+         */
+        softAssert(
+                name.stream().allMatch(names ->
+                        values.stream().anyMatch(manufacturerName ->
+                                names.toLowerCase().contains(manufacturerName.toLowerCase())
+                        )
+                ),
+                "Не соответствуют фильтру по названию: " + nonMatchingNames
+        );
+        /**
+         * Проверка на соответствие цене
+         */
+        softAssert(price.stream()
+                .allMatch(prices->prices >= minValue && prices <= maxValue), "Не соответствуют фильтру по цене " + nonMatchingPrice);
 
     }
+
+    /**
+     * возможно тут надо разделить на 2 метода (перейти на верх страницы и найти первый ноутбук
+     * @return
+     */
     public String goToThePageTop() {
         chromedriver.findElement(By.xpath(pageXpath)).sendKeys(Keys.HOME);
         WebElement firstNotebook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(firstNotebookXpath)));
