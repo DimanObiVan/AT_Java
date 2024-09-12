@@ -25,24 +25,19 @@ public class YandexAfterSearch {
     private String manufacturerFilterValue = ".//div[contains(@data-zone-data,'";
     private String notebookElement = "//div[@data-auto='SerpList']/child::div";
     private String itemName = "//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name']";
-//    private String itemPrice = "//div[@data-apiary-widget-name='@light/Organic']//div[@data-auto='snippet-price-current']";
     private String itemPrice = "//div[@data-baobab-name='price']//span[contains(@class,'headline')]";
     private String pageXpath = "//body";
     private String firstNotebookXpath = "(//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name'])[1]";
     private String searchField = "//input[@id='header-search']";
     private String searchButton = "//button[@data-auto='search-button']";
-//    private String filter = "//div[@data-zone-name='QuickFilters']//div[contains(@data-zone-data, '\"filterName\":\"Производитель\"')]";
-    private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()='";
+    private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()=\"";
     private String forStaleness = "//div[@data-apiary-widget-name='@marketfront/SerpEntity'][2]";
     private String endOfXpath = "')]";
 
-
-   // private List<String> manufacturer = List.of("HP", "Lenovo", "Acer", "ASUS");
     public WebDriver chromedriver;
 
 
     public YandexAfterSearch(WebDriver chromedriver) {
-//        super();
         this.chromedriver = chromedriver;
         wait = new WebDriverWait(chromedriver, 10);
     }
@@ -54,49 +49,46 @@ public class YandexAfterSearch {
         maxValueField.sendKeys(Integer.toString(maxValue));
     }
 
-
-    public void manufacturersList(List<String> values) throws InterruptedException {
-       WebElement filter = chromedriver.findElement(By.xpath(manufacturerFilter));
-//       wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
-        /**
-         * Итерируемся по всем указанным производителям
-         */
+    /**
+     *
+     * @param values - список производителей (Кузнецов)
+     */
+    public void manufacturersList(List<String> values) {
+ //      WebElement filter = chromedriver.findElement(By.xpath(manufacturerFilter));
+        WebElement filter = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
         for (String value : values) {
-            /**
-             * Ждем появление кнопки Показать еще и нажимаем
-             */
+             //Ждем появление кнопки Показать еще и нажимаем
             fluentWait(chromedriver)
                     .until(ExpectedConditions
                             .elementToBeClickable(filter
                                     .findElement(By.xpath(".//button"))));
             WebElement button = filter.findElement(By.xpath(".//button"));
             button.click();
-            /**
-             * Ждем появление поля для ввода и вводим название
-             */
+             //Ждем появление поля для ввода и вводим название
             fluentWait(chromedriver)
                     .until(ExpectedConditions
                             .elementToBeClickable(filter
                                     .findElement(By.xpath(  ".//input"))));
             WebElement input = filter.findElement(By.xpath(".//input"));
             input.sendKeys(value);
-            /**
-             * Ждем появление фильтра по названию и отмечаем чекбокс
-             */
+             //Ждем появление фильтра по названию и отмечаем чекбокс
             fluentWait(chromedriver)
                     .until(ExpectedConditions
                             .elementToBeClickable(filter
                                     .findElement(By.xpath(manufacturerFilterValue + value + endOfXpath))));
             WebElement element = filter.findElement(By.xpath(manufacturerFilterValue + value + endOfXpath));
             element.click();
+            //ждем, когда прогрузится список
             WebElement stale = chromedriver.findElement(By.xpath(forStaleness));
             wait.until(ExpectedConditions.stalenessOf(stale));
             }
         }
 
 
-
-
+    /**
+     * Проверка того, что на странице более number элементов товаров
+     * @param number - число элементов (Кузнецов)
+     */
     public void assertElementsMoreThanValue(int number) {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookElement)));
             List<WebElement> elements = chromedriver.findElements(By.xpath(notebookElement));
@@ -104,13 +96,15 @@ public class YandexAfterSearch {
         }
 
     /**
-     * Надо доработать скролл, проверку по регистру для названий
+     * Метод проверки на соответствие фильтру
+     * @param  minValue - цена от
+     * @param maxValue - цена до
+     * @param values - список производителей (Кузнецов)
      * @throws InterruptedException
      */
     public void assertElementsMatchFilter(int minValue, int maxValue, List<String> values) throws InterruptedException {
         Scroller.scrollWithJS(chromedriver);
 
-//        Scroller.scroll(pageXpath, chromedriver);
         List<String> name = chromedriver.findElements(By.xpath(itemName))
                 .stream()
                 .map(WebElement::getText)
@@ -141,7 +135,7 @@ public class YandexAfterSearch {
             }
         }
         /**
-         * Проверка на соответствие названию
+         * Проверка на соответствие названию (Кузнецов)
          */
         softAssert(
                 name.stream().allMatch(names ->
@@ -152,7 +146,7 @@ public class YandexAfterSearch {
                 "Не соответствуют фильтру по названию: " + nonMatchingNames
         );
         /**
-         * Проверка на соответствие цене
+         * Проверка на соответствие цене (Кузнецов)
          */
         softAssert(price.stream()
                 .allMatch(prices->prices >= minValue && prices <= maxValue), "Не соответствуют фильтру по цене " + nonMatchingPrice);
@@ -160,13 +154,16 @@ public class YandexAfterSearch {
     }
 
     /**
-     * возможно тут надо разделить на 2 метода (перейти на верх страницы и найти первый ноутбук
-     * @return
+     * Метод перемещения на верх страницы (Кузнецов)
      */
     public void goToThePageTop() {
         chromedriver.findElement(By.xpath(pageXpath)).sendKeys(Keys.HOME);
     }
 
+    /**
+     * Функция которая находит первый ноутбук, берет его название, вводит в строку поиска и жмет Найти. Также запоминает название
+     * @return firstNotebookName - название ноутбука (Кузнецов)
+     */
     public String findFirstNotebook() {
        WebElement searchfield = chromedriver.findElement(By.xpath(searchField));
        WebElement firstNotebook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(firstNotebookXpath)));
@@ -176,12 +173,28 @@ public class YandexAfterSearch {
         return firstNotebookName;
     }
 
-//    public void searchButtonClick(){
-//        chromedriver.findElement(By.xpath(searchButton)).click();
+    /**
+     * Метод проверки наличия ноутбука на странице
+     * @param firstNotebookName - название ноутбука (Кузнецов)
+     */
+//    public void assertNotebookIsFound(String firstNotebookName){
+//      WebElement notbokk = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookFoundPath+firstNotebookName+"']")) );
+////        List<WebElement> notbokk = chromedriver.findElements(By.xpath(notebookFoundPath+firstNotebookName+"']"));
+//        softAssert(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
 //    }
-    public void assertNotebookIsFound(String firstNotebookName){
-      WebElement notbokk = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookFoundPath+firstNotebookName+"']")) );
-        softAssert(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
+
+    public void assertNotebookIsFound(String firstNotebookName) {
+        // Используем ExpectedConditions для поиска элемента без выброса исключения
+        List<WebElement> notebooks = chromedriver.findElements(By.xpath(notebookFoundPath + firstNotebookName + "\"]"));
+
+        // Проверяем, что список не пустой (элемент найден)
+        if (!notebooks.isEmpty()) {
+            // Выполняем мягкую проверку, если элемент найден
+            Assertions.assertEquals(notebooks.get(0).getText(), firstNotebookName, "Отсутствует искомый товар");
+        } else {
+            // Выполняем мягкую проверку, если элемент не найден
+            Assertions.assertEquals(null, firstNotebookName, "Элемент не найден: отсутствует искомый товар");
+        }
     }
 
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Assertions {
-    @Step("Проверяем что нет ошибки: {message}")
+    @Step("Проверяем: {message}")
     public static void assertTrue(boolean condition, String message) {
         try {
 
@@ -32,13 +32,14 @@ public class Assertions {
     }
 
     public static void softAssert(boolean condition, String message) {
-        final List<String> errors1 = new ArrayList<>();
+        final List<String> errors = new ArrayList<>();
         try {
             assertTrue(condition, message);
         } catch (AssertionError e) {
-            errors1.add(message);
+            errors.add(message);
         }
-        System.out.println(errors1);
+        System.out.println(errors);
+
     }
 
 }

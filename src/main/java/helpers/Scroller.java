@@ -5,27 +5,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.YandexAfterSearch;
+
+import static helpers.Properties.testsProperties;
 import static java.lang.Thread.sleep;
 
 public class Scroller {
 
 
-    public static void scroll(String xPath, WebDriver chromeDriver) throws InterruptedException {
-       WebElement scroller = chromeDriver.findElement(By.xpath(xPath));
-        long startTime = System.currentTimeMillis();
-        long timeout = 45000;
-       while (System.currentTimeMillis() - startTime < timeout) {
-
-       //        chromeDriver.findElement(By.xpath(xPath)).click();
-               scroller.sendKeys(Keys.PAGE_DOWN);
-
-           sleep(700);
-
-       }
-    }
-
     public static void scrollWithJS(WebDriver chromedriver) throws InterruptedException {
-        sleep(2000);
+        sleep(testsProperties.sleepTime());
         JavascriptExecutor js = (JavascriptExecutor) chromedriver;
         WebElement element = chromedriver.findElement(By.xpath("//*[text()='Статистика']"));
         while (true) {try {
@@ -43,7 +31,7 @@ public class Scroller {
             js.executeScript("window.scrollBy(0, 1000);");
 
             // Ждем некоторое время, чтобы контент успел подгрузиться
-            Thread.sleep(1250);
+            Thread.sleep(testsProperties.sleepTime());
 
             // Проверяем снова
             if (a) {

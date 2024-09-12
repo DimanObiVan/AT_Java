@@ -5,18 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import pages.YandexAfterSearch;
 import pages.YandexMainPage;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import static helpers.Properties.testsProperties;
 import static steps.StepsAll.*;
 import static steps.StepsForYandex.*;
 
@@ -32,7 +26,7 @@ public class YandexMarketTests extends BaseTest {
                            int maxPrice,
                            int number,
                            List<String> values) throws InterruptedException {
-        openYandex("https://market.yandex.ru/", chromeDriver);
+        openYandex(testsProperties.yandexmarketUrl(), chromeDriver);
         catalogueOpen();
         hoverOver(category, section);
         setPriceRange(minPrice, maxPrice);
@@ -41,7 +35,7 @@ public class YandexMarketTests extends BaseTest {
         assertElementsMatchFilter(minPrice, maxPrice, values);
         goToThePageTop();
        String first = findFirstNotebook();
-//        searchButtonClick();
         assertNotebookIsFound(first);
     }
+
 }

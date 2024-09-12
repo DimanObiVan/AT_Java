@@ -13,4 +13,10 @@ public interface TestsProperties extends Config {
 
     @Config.Key("default.timeout")
     int defaultTimeout();
+
+    @Config.Key("yandexmarketUrl")
+    String yandexmarketUrl();
+
+    @Config.Key("sleepTime")
+    int sleepTime();
 }

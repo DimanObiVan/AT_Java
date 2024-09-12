@@ -28,18 +28,18 @@ public class StepsForYandex {
         YandexMainPage page = new YandexMainPage(driver);
         page.catalogueOpen();
     }
-    @Step("Навести курсор на раздел Электроника и Перейти в раздел \"Ноутбуки\"")
+    @Step("Навести курсор на раздел {category} и Перейти в раздел {item}")
     public static void hoverOver(String category, String item){
         YandexMainPage page = new YandexMainPage(driver);
         page.hoverOverAndClick(category, item);
     }
-    @Step("Задать параметр «Цена, Р» от  10000 до 30000 рублей.")
+    @Step("Задать параметр «Цена, Р» от  {minValue} до {maxValue} рублей.")
     public static void setPriceRange(int minValue, int maxValue){
         YandexAfterSearch page = new YandexAfterSearch(driver);
         page.setPriceRange(minValue, maxValue);
     }
-    @Step("Выбрать производителя HP и Lenovo")
-    public static void manufacturersList(List<String> values) throws InterruptedException {
+    @Step("Выбрать производителей: {values}")
+    public static void manufacturersList(List<String> values) {
         YandexAfterSearch page = new YandexAfterSearch(driver);
         page.manufacturersList(values);
     }
@@ -59,7 +59,7 @@ public class StepsForYandex {
         page.goToThePageTop();
     }
 
-    @Step("В поисковую строку ввести запомненное значение")
+    @Step("В поисковую строку ввести запомненное значение и нажать Найти")
     public static String findFirstNotebook() {
         YandexAfterSearch page = new YandexAfterSearch(driver);
         String firstNotebookName = page.findFirstNotebook();
