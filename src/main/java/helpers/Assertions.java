@@ -13,13 +13,14 @@ public class Assertions {
 
             org.junit.jupiter.api.Assertions.assertTrue(condition, message);
         } catch (Exception e) {
-            System.out.println(message);
+            System.out.println(e);
         }
     }
     @Step("Проверяем что {expected} равно {actual}: {message}")
     public static void assertEquals(Object expected, Object actual, String message) {
         org.junit.jupiter.api.Assertions.assertEquals(expected, actual, message);
     }
+
 
     public static void softAssert(Object expected, Object actual, String message) {
         final List<String> errors = new ArrayList<>();

@@ -30,7 +30,7 @@ public class YandexAfterSearch {
     private String firstNotebookXpath = "(//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name'])[1]";
     private String searchField = "//input[@id='header-search']";
     private String searchButton = "//button[@data-auto='search-button']";
-    private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()=\"";
+    private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()='";
     private String forStaleness = "//div[@data-apiary-widget-name='@marketfront/SerpEntity'][2]";
     private String endOfXpath = "')]";
 
@@ -178,19 +178,30 @@ public class YandexAfterSearch {
      * @param firstNotebookName - название ноутбука (Кузнецов)
      */
 //    public void assertNotebookIsFound(String firstNotebookName){
-//      WebElement notbokk = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookFoundPath+firstNotebookName+"']")) );
+//      WebElement notbokk = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookFoundPath+firstNotebookName
+//              .replace("\"", "")
+//              .replace("'", "")
+//              +"']")) );
 ////        List<WebElement> notbokk = chromedriver.findElements(By.xpath(notebookFoundPath+firstNotebookName+"']"));
-//        softAssert(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
+//        Assertions.assertEquals(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
 //    }
 
     public void assertNotebookIsFound(String firstNotebookName) {
         // Используем ExpectedConditions для поиска элемента без выброса исключения
-        List<WebElement> notebooks = chromedriver.findElements(By.xpath(notebookFoundPath + firstNotebookName + "\"]"));
+        List<WebElement> notebooks = chromedriver.findElements(By.xpath(notebookFoundPath + firstNotebookName
+                .replace("\"", "")
+                .replace("'", "")
+                + "']"));
+
 
         // Проверяем, что список не пустой (элемент найден)
         if (!notebooks.isEmpty()) {
-            // Выполняем мягкую проверку, если элемент найден
-            Assertions.assertEquals(notebooks.get(0).getText(), firstNotebookName, "Отсутствует искомый товар");
+            Assertions.assertTrue(notebooks
+                    .get(0)
+                    .getText()
+//                    .replace("\"", "")
+//                    .replace("'", "")
+                    .contains(firstNotebookName), "Отсутствует искомый товар");
         } else {
             // Выполняем мягкую проверку, если элемент не найден
             Assertions.assertEquals(null, firstNotebookName, "Элемент не найден: отсутствует искомый товар");
