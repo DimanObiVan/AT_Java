@@ -154,11 +154,11 @@ public class YandexAfterSearch {
         List<Integer> nonMatchingPrice = price.stream()
                 .filter(prices->prices<= minValue || prices >=maxValue)
                 .collect(Collectors.toList());
-        System.out.println("НЕ удовлетворяют условиям по цене: " + nonMatchingPrice);
+//        System.out.println("НЕ удовлетворяют условиям по цене: " + nonMatchingPrice);
         List<String> nonMatchingNames = name.stream()
                 .filter(names -> values.stream().noneMatch(names::contains))
                 .collect(Collectors.toList());
-        System.out.println("Не удовлетворяют условиям по названию: " + nonMatchingNames);
+//        System.out.println("Не удовлетворяют условиям по названию: " + nonMatchingNames);
 
         for (String names : name) {
             boolean matches = values.stream()
@@ -207,18 +207,6 @@ public class YandexAfterSearch {
         return firstNotebookName;
     }
 
-    /**
-     * Метод проверки наличия ноутбука на странице
-     * @param firstNotebookName - название ноутбука (Кузнецов)
-     */
-//    public void assertNotebookIsFound(String firstNotebookName){
-//      WebElement notbokk = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(notebookFoundPath+firstNotebookName
-//              .replace("\"", "")
-//              .replace("'", "")
-//              +"']")) );
-////        List<WebElement> notbokk = chromedriver.findElements(By.xpath(notebookFoundPath+firstNotebookName+"']"));
-//        Assertions.assertEquals(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
-//    }
 
     /**
      * Проверка того, что в результатах поиска, на первой странице, есть искомый товар
@@ -228,24 +216,20 @@ public class YandexAfterSearch {
         String firstNotebookName1 = firstNotebookName
                 .replace("'", "\"");
         System.out.println(firstNotebookName1);
-        // Используем ExpectedConditions для поиска элемента без выброса исключения
         List<WebElement> notebooks = chromedriver.findElements(By.xpath(notebookFoundPath + firstNotebookName
-//                .replace("\"", "")
                 .replace("'", "\"")
                 + "']"));
-
+        System.out.println(notebooks);
         // Проверяем, что список не пустой (элемент найден)
         if (!notebooks.isEmpty()) {
             System.out.println(notebooks.get(0).getText());
             Assertions.assertTrue(notebooks
                     .get(0)
                     .getText()
-//                    .replace("\"", "")
-//                    .replace("'", "")
                     .replace("'", "\"")
                     .contains(firstNotebookName1), "Отсутствует искомый товар");
         } else {
-            Assertions.assertEquals(null, firstNotebookName1, "Элемент не найден: отсутствует искомый товар");
+            Assertions.fail("Элемент не найден: отсутствует искомый товар");
         }
     }
 

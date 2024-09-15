@@ -43,4 +43,8 @@ public class Assertions {
 
     }
 
+    public static void fail(String message) {
+        org.junit.jupiter.api.Assertions.fail(message);
+    }
+
 }
