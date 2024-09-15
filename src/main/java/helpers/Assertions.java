@@ -21,7 +21,7 @@ public class Assertions {
         org.junit.jupiter.api.Assertions.assertEquals(expected, actual, message);
     }
 
-
+    @Step("Проверяем что {expected} равно {actual}: {message}")
     public static void softAssert(Object expected, Object actual, String message) {
         final List<String> errors = new ArrayList<>();
         try {
@@ -31,7 +31,7 @@ public class Assertions {
         }
         System.out.println(errors);
     }
-
+    @Step("Проверяем что {condition} верно: {message}")
     public static void softAssert(boolean condition, String message) {
         final List<String> errors = new ArrayList<>();
         try {

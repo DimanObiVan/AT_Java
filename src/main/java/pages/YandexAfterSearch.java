@@ -12,36 +12,64 @@ import java.util.stream.Collectors;
 
 import static helpers.Assertions.softAssert;
 import static helpers.CustomWaits.fluentWait;
-import static helpers.CustomWaits.fluentWaitInvisibleIfLocated;
-import static java.lang.Thread.sleep;
 
+/**
+ * Класс для взаимодействия с результатами поиска на ЯндексМаркете.
+ *
+ * <p>Содержит методы для установки ценовых диапазонов, выбора производителей и поиска товаров
+ * после применения фильтров. Класс используется для тестов на странице с результатами поиска.</p>
+ *
+ * <p><b>Автор:</b> Кузнецов Д.К.</p>
+ */
 public class YandexAfterSearch {
-
+    /** Объект WebDriverWait для явных ожиданий элементов на странице */
     public WebDriverWait wait;
-
+    /** XPath для минимального значения в диапазоне цен */
     private String minValueRange = "//div[@data-filter-id='glprice']//span[contains(@data-auto, 'filter-range-min')]//input";
+    /** XPath для максимального значения в диапазоне цен */
     private String maxValueRange = "//div[@data-filter-id='glprice']//span[contains(@data-auto, 'filter-range-max')]//input";
+    /** XPath для фильтра производителей */
     private String manufacturerFilter = "//div[contains(@data-zone-data,'Производитель')]";
+    /** XPath для выбора значения производителя */
     private String manufacturerFilterValue = ".//div[contains(@data-zone-data,'";
+    /** XPath для списка элементов ноутбуков на странице поиска */
     private String notebookElement = "//div[@data-auto='SerpList']/child::div";
+    /** XPath для имени элемента */
     private String itemName = "//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name']";
+    /** XPath для цены элемента */
     private String itemPrice = "//div[@data-baobab-name='price']//span[contains(@class,'headline')]";
+    /** XPath для тела страницы */
     private String pageXpath = "//body";
+    /** XPath для первого элемента в списке ноутбуков */
     private String firstNotebookXpath = "(//div[@data-apiary-widget-name='@light/Organic']//span[@itemprop='name'])[1]";
+    /** XPath для поля поиска */
     private String searchField = "//input[@id='header-search']";
+    /** XPath для кнопки поиска */
     private String searchButton = "//button[@data-auto='search-button']";
+    /** XPath для найденного ноутбука */
     private String notebookFoundPath = "//div[@data-auto='SerpList']//*[text()='";
+    /** XPath списка элементов на странице (используется для проверки стейл-элементов) */
     private String forStaleness = "//div[@data-apiary-widget-name='@marketfront/SerpEntity'][2]";
+    /** XPath для конца поиска элементов */
     private String endOfXpath = "')]";
-
+    /** Объект WebDriver для управления браузером */
     public WebDriver chromedriver;
 
-
+    /**
+     * Конструктор класса YandexAfterSearch.
+     *
+     * @param chromedriver объект WebDriver, используемый для управления браузером.
+     */
     public YandexAfterSearch(WebDriver chromedriver) {
         this.chromedriver = chromedriver;
         wait = new WebDriverWait(chromedriver, 10);
     }
-
+    /**
+     * Устанавливает диапазон цен на странице поиска товаров.
+     *
+     * @param minValue минимальная цена.
+     * @param maxValue максимальная цена.
+     */
     public void setPriceRange(int minValue, int maxValue) {
         WebElement minValueField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(minValueRange)));
         minValueField.sendKeys(Integer.toString(minValue));
@@ -50,11 +78,17 @@ public class YandexAfterSearch {
     }
 
     /**
+     * Метод для работы с фильтром производителей на странице.
+     * Осуществляет следующие шаги для каждого производителя из списка:
+     * 1. Нажимает кнопку "Показать еще", если она доступна.
+     * 2. Вводит название производителя в поле ввода.
+     * 3. Ожидает появления чекбокса для производителя и отмечает его.
+     * 4. Ожидает завершения загрузки товаров после применения фильтра.
      *
-     * @param values - список производителей (Кузнецов)
+     * @param values список значений производителей, которые необходимо выбрать
+     * @throws InterruptedException в случае, если в процессе выполнения возникли проблемы с ожиданием
      */
     public void manufacturersList(List<String> values) {
- //      WebElement filter = chromedriver.findElement(By.xpath(manufacturerFilter));
         WebElement filter = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(manufacturerFilter)));
         for (String value : values) {
              //Ждем появление кнопки Показать еще и нажимаем
@@ -186,25 +220,32 @@ public class YandexAfterSearch {
 //        Assertions.assertEquals(notbokk.getText(), firstNotebookName, "Отсутствует искомый товар");
 //    }
 
+    /**
+     * Проверка того, что в результатах поиска, на первой странице, есть искомый товар
+     * @param firstNotebookName - название ноута, который ищем (Кузнецов)
+     */
     public void assertNotebookIsFound(String firstNotebookName) {
+        String firstNotebookName1 = firstNotebookName
+                .replace("'", "\"");
+        System.out.println(firstNotebookName1);
         // Используем ExpectedConditions для поиска элемента без выброса исключения
         List<WebElement> notebooks = chromedriver.findElements(By.xpath(notebookFoundPath + firstNotebookName
-                .replace("\"", "")
-                .replace("'", "")
+//                .replace("\"", "")
+                .replace("'", "\"")
                 + "']"));
-
 
         // Проверяем, что список не пустой (элемент найден)
         if (!notebooks.isEmpty()) {
+            System.out.println(notebooks.get(0).getText());
             Assertions.assertTrue(notebooks
                     .get(0)
                     .getText()
 //                    .replace("\"", "")
 //                    .replace("'", "")
-                    .contains(firstNotebookName), "Отсутствует искомый товар");
+                    .replace("'", "\"")
+                    .contains(firstNotebookName1), "Отсутствует искомый товар");
         } else {
-            // Выполняем мягкую проверку, если элемент не найден
-            Assertions.assertEquals(null, firstNotebookName, "Элемент не найден: отсутствует искомый товар");
+            Assertions.assertEquals(null, firstNotebookName1, "Элемент не найден: отсутствует искомый товар");
         }
     }
 

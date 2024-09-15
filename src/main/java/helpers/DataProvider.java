@@ -45,7 +45,7 @@ public class DataProvider {
 //        values.add("ASUS");
 //        values.add("DELL");
         return Stream.of(
-                Arguments.of("Электроника", "Ноутбуки", "10000", "30000", 12, values)
+                Arguments.of("Электроника", "Ноутбуки", "20000", "30000", 12, values)
         );
     }
 }

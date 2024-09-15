@@ -11,7 +11,12 @@ import static java.lang.Thread.sleep;
 
 public class Scroller {
 
-
+    /**
+     * Метод для скролла страницы с помощью JS
+     * @param chromedriver - хромдрайвер
+     * @throws InterruptedException
+     * (Кузнецов)
+     */
     public static void scrollWithJS(WebDriver chromedriver) throws InterruptedException {
         sleep(testsProperties.sleepTime());
         JavascriptExecutor js = (JavascriptExecutor) chromedriver;

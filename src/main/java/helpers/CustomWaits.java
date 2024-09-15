@@ -73,7 +73,13 @@ private static int implicitlyWait=30;
                 );
     }
 
-
+    /**
+     * Флюент вейт
+     * @param chromedriver - хромдрайвер
+     * @param elementXpath - xPath искомого элемента
+     * @param timeWaitLocated - время ожидания
+     *                        (Кузнецов)
+     */
     public static void fluentWaitInvisibleIfLocated(WebDriver chromedriver, String elementXpath, int timeWaitLocated/*, int timeWaitInvisible*/){
         chromedriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         try {
@@ -85,6 +91,12 @@ private static int implicitlyWait=30;
         implicitlyWait(chromedriver,implicitlyWait);
     }
 
+    /**
+     * Создаем объект флюент вейта
+     * @param driver - хромдрайвер
+     * @return - возвращает объект флюент вейта
+     * (Кузнецов)
+     */
     public static FluentWait<WebDriver> fluentWait(WebDriver driver) {
         return new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(30))

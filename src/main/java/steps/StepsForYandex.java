@@ -15,6 +15,11 @@ public class StepsForYandex {
     private static WebDriver driver;
     private static WebDriverWait wait;
 
+    /**
+     * Метод перехода на сайт
+     * @param url - адрес сайта
+     * @param currentDriver - вебдрайвер
+     */
     @Step("Переходим на сайт: {url}")
     public static void openYandex(String url, WebDriver currentDriver){
         driver=currentDriver;
@@ -23,21 +28,43 @@ public class StepsForYandex {
 //        wait.until(ExpectedConditions.titleIs(title));
     }
 
+    /**
+     * Метод перехода в Каталог (Кузнецов)
+     */
     @Step("Переходим в Каталог")
     public static void catalogueOpen(){
         YandexMainPage page = new YandexMainPage(driver);
         page.catalogueOpen();
     }
-    @Step("Навести курсор на раздел {category} и Перейти в раздел {item}")
+
+    /**
+     * Метод наведения курсора на раздел category и перехода в подраздел item
+     * @param category - раздел
+     * @param item - подраздел
+     *             (Кузнецов)
+     */
+    @Step("Навести курсор на раздел {category} и Перейти в подраздел {item}")
     public static void hoverOver(String category, String item){
         YandexMainPage page = new YandexMainPage(driver);
         page.hoverOverAndClick(category, item);
     }
+
+    /**
+     * Метод указания мин и макс цены
+     * @param minValue - мин цена
+     * @param maxValue - макс цена
+     *                 (Кузнецов)
+     */
     @Step("Задать параметр «Цена, Р» от  {minValue} до {maxValue} рублей.")
     public static void setPriceRange(int minValue, int maxValue){
         YandexAfterSearch page = new YandexAfterSearch(driver);
         page.setPriceRange(minValue, maxValue);
     }
+
+    /**
+     *
+     * @param values
+     */
     @Step("Выбрать производителей: {values}")
     public static void manufacturersList(List<String> values) {
         YandexAfterSearch page = new YandexAfterSearch(driver);
@@ -70,6 +97,7 @@ public class StepsForYandex {
 //        YandexAfterSearch page = new YandexAfterSearch(driver);
 //        page.searchButtonClick();
 //    }
+
     @Step("Проверить, что в результатах поиска, на первой странице, есть искомый товар")
     public static void assertNotebookIsFound(String firstNotebookName)  {
         YandexAfterSearch page = new YandexAfterSearch(driver);
